@@ -2,6 +2,7 @@ const submitButton = document.getElementById('submit-button');
 const historyContainer = document.querySelector('.chat-container');
 const questionInput = document.getElementById('question');
 const fileInput = document.getElementById('fileInput');  // Reference the file input
+const loadAnimate = document.querySelector('.loader-animation');
 
 // Function to process the answer and display response
 function processAnswer() {
@@ -37,7 +38,7 @@ async function handleFileUpload(question) {
 
   const formData = new FormData();
   formData.append('file', file);
-
+  loadAnimate.classList.remove("active")
   try {
     const response = await fetch('https://api.chatpdf.com/v1/sources/add-file', {
       method: 'POST',
@@ -58,6 +59,7 @@ async function handleFileUpload(question) {
     const answerText = await processQuestionUsingSourceId(sourceId, question);
 
     
+
     const userParagraph = document.createElement('p');
     userParagraph.classList.add('user'); 
     userParagraph.textContent = `YOU : ${question}`;
@@ -116,5 +118,6 @@ document.addEventListener('keypress', function(event) {
   if (event.key === 'Enter') {
     event.preventDefault();
     submitButton.click();
+    loadAnimate.classList.add("active")
   }
 });
