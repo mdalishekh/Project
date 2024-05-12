@@ -1,0 +1,22 @@
+body {
+    padding: 0;
+    font-family: sans-serif;
+    margin: 0;
+   
+}
+.main-conatiner {
+    height: 99vh;
+    width: 99vw;
+    border:1px solid black;
+    overflow-x: hidden;
+}
+
+.navbar {
+    height: 10vh;
+    width: 98vw;
+    border:1px solid black;
+   display: flex;
+}
+.input-file{
+    width: 90px;
+}
