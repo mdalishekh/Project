@@ -9,22 +9,90 @@
   width: 100vw;
   border: 1px solid red;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 20px;
 }
 
 .navbar {
   height: 10%;
+  width: 97%;
+  margin-top: 10px;
   font-weight: bolder;
   padding: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: aqua;
-  border: 2px solid black;
+  background-color: #f0f0f0;
+  border-radius: 5px;
 }
 
 .upload-btn {
   all: unset;
-  /* background-color: rgb(210, 210, 210); */ /*this is optional if you want to use*/
   padding: 10px 5px 10px 5px;
   cursor: pointer;
+}
+
+.chat-container {
+  height: 60%;
+  width: 97%;
+  /* max-height: 280px;  */
+  overflow-y: auto;
+  max-height: 280px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+.user {
+  color: rgb(33, 100, 69);
+  font-weight: 550;
+  line-height: 30px;
+  padding: 10px;
+}
+.ai {
+  color: black;
+  font-weight: 540;
+  line-height: 28px;
+  padding: 10px;
+}
+
+.input-container {
+  width: 97%;
+  /* margin: 10px 0px 0px 0px; */
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  padding: 30px;
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: center;
+  align-items: center;
+  column-gap: 20px;
+}
+
+#headline {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+#question {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 90%;
+  max-width: 100%;
+  margin-bottom: 10px;
+}
+
+#submit-button {
+  background-color: #4caf50;
+  margin-top: -10px;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#submit-button:hover {
+  background-color: #3e8e41;
 }

@@ -1,5 +1,5 @@
 const submitButton = document.getElementById('submit-button');
-const historyContainer = document.querySelector('.history-container');
+const historyContainer = document.querySelector('.chat-container');
 const questionInput = document.getElementById('question');
 const fileInput = document.getElementById('fileInput');  // Reference the file input
 

@@ -10,8 +10,16 @@
   <body>
     <div class="main-conatiner">
       <div class="navbar">
-        <button class="upload-btn">UPLOAD</button>
-        <div class="chat-pdf">CHAT WITH PDF</div>
+        <input type="file" id="fileInput" name="file" />
+        <div class="logo">
+          <p>Chat with Pdf</p>
+        </div>
+      </div>
+      <div class="chat-container"></div>
+      <div class="input-container">
+        <p id="headline">Ask me anything about your PDF 😇</p>
+        <input type="text" id="question" placeholder="Ask Question Here" />
+        <button id="submit-button">Send</button>
       </div>
     </div>
     <script src="/js/app.js"></script>
