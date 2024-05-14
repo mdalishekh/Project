@@ -1,123 +1,105 @@
-const submitButton = document.getElementById('submit-button');
-const historyContainer = document.querySelector('.chat-container');
-const questionInput = document.getElementById('question');
-const fileInput = document.getElementById('fileInput');  // Reference the file input
-const loadAnimate = document.querySelector('.loader-animation');
+const submitButton = document.getElementById("submit-button");
+const chatContainer = document.getElementById("chatContainer");
+const questionInput = document.getElementById("question");
+const fileInput = document.getElementById("fileInput");
+const loader = document.getElementById("loader");
 
-// Function to process the answer and display response
-function processAnswer() {
-  const question = questionInput.value.trim(); // Trim leading/trailing whitespace
+submitButton.addEventListener("click", processQuestion);
 
-  // Check if input field is empty before processing
+document.addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    processQuestion();
+  }
+});
+
+async function processQuestion() {
+  const question = questionInput.value.trim();
+
   if (!question) {
     alert("Please ask a question before submitting.");
-    return; // Exit function if empty
-  }
-
-  questionInput.value = ""; // Clear input field
-
-  // Handle file upload and API call before processing question
-  handleFileUpload(question);
-}
-
-// Function to handle file upload and API call
-async function handleFileUpload(question) {
-  const file = fileInput.files[0];
-
-  // Check if a file is selected
-  if (!file) {
-    alert('Please select a PDF file to upload.');
     return;
   }
 
-  // Validate file type (optional)
-  if (file.type !== 'application/pdf') {
-    alert('Only PDF files are supported.');
+  questionInput.value = "";
+
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert("Please select a PDF file to upload.");
+    return;
+  }
+
+  if (file.type !== "application/pdf") {
+    alert("Only PDF files are supported.");
     return;
   }
 
   const formData = new FormData();
-  formData.append('file', file);
-  loadAnimate.classList.remove("active")
+  formData.append("file", file);
+
   try {
-    const response = await fetch('https://api.chatpdf.com/v1/sources/add-file', {
-      method: 'POST',
+    loader.style.display = "block";
+
+    const uploadResponse = await fetch("https://api.chatpdf.com/v1/sources/add-file", {
+      method: "POST",
       headers: {
-        'x-api-key': 'sec_5Q0hNiqKd2PlimXRbOVwGJ2xkCIZ6qSE', 
+        "x-api-key": "sec_5Q0hNiqKd2PlimXRbOVwGJ2xkCIZ6qSE",
       },
       body: formData,
     });
 
-    if (!response.ok) {
-      throw new Error(`Error uploading file: ${response.statusText}`);
+    if (!uploadResponse.ok) {
+      throw new Error(`Error uploading file: ${uploadResponse.statusText}`);
     }
 
-    const data = await response.json();
-    const sourceId = data.sourceId;  
+    const uploadData = await uploadResponse.json();
+    const sourceId = uploadData.sourceId;
 
-    
-    const answerText = await processQuestionUsingSourceId(sourceId, question);
+    const questionParagraph = document.createElement("p");
+    questionParagraph.classList.add("user");
+    questionParagraph.textContent = `YOU: ${question}`;
+    chatContainer.appendChild(questionParagraph);
 
-    
+    const answer = await getAnswer(sourceId, question);
 
-    const userParagraph = document.createElement('p');
-    userParagraph.classList.add('user'); 
-    userParagraph.textContent = `YOU : ${question}`;
+    const answerParagraph = document.createElement("p");
+    answerParagraph.classList.add("ai");
+    answerParagraph.textContent = `AI: ${answer}`;
+    chatContainer.appendChild(answerParagraph);
 
-    const responseParagraph = document.createElement('p');
-    responseParagraph.classList.add('ai'); 
-    responseParagraph.textContent = answerText;
-
-    
-    historyContainer.appendChild(userParagraph);
-    historyContainer.appendChild(responseParagraph);
-    historyContainer.scrollTop = historyContainer.scrollHeight; 
+    chatContainer.scrollTop = chatContainer.scrollHeight;
   } catch (error) {
-    console.error('Error:', error);
-    alert('Error uploading file or processing question.');
+    console.error("Error:", error);
+    alert("Error uploading file or processing question.");
+  } finally {
+    loader.style.display = "none";
   }
 }
 
-
-async function processQuestionUsingSourceId(sourceId, question) {
-  const data = {
-    'sourceId': sourceId,
-    'messages': [
+async function getAnswer(sourceId, question) {
+  const requestData = {
+    sourceId: sourceId,
+    messages: [
       {
-        'role': 'user',
-        'content': question,
-      }
-    ]
+        role: "user",
+        content: question,
+      },
+    ],
   };
 
-  const response = await fetch('https://api.chatpdf.com/v1/chats/message', {
-    method: 'POST',
+  const response = await fetch("https://api.chatpdf.com/v1/chats/message", {
+    method: "POST",
     headers: {
-      'x-api-key': 'sec_5Q0hNiqKd2PlimXRbOVwGJ2xkCIZ6qSE', 
-      'Content-Type': 'application/json',
+      "x-api-key": "sec_5Q0hNiqKd2PlimXRbOVwGJ2xkCIZ6qSE",
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(requestData),
   });
 
   if (!response.ok) {
     throw new Error(`Error processing question: ${response.statusText}`);
   }
 
-  const responseJson = await response.json();
-  const content = responseJson.content; 
-  
-  const answer = `AI : ${content} `;
-  return answer;
+  const responseData = await response.json();
+  return responseData.content;
 }
-
-// Event listener for submit button click
-submitButton.addEventListener('click', processAnswer);
-
-// Event listener for Enter key press (optional)
-document.addEventListener('keypress', function(event) {
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    submitButton.click();
-    loadAnimate.classList.add("active")
-  }
-});

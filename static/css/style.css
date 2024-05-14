@@ -1,125 +1,121 @@
 * {
-    padding: 0;
-    font-family: sans-serif;
-    box-sizing: border-box;
-    margin: 0;
-  }
-  .main-conatiner {
-    height: 100vh;
-    width: 100vw;
-    border: 1px solid black;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    row-gap: 20px;
-  }
-  .navbar {
-    height: 10%;
-    width: 97%;
-    margin: 10px 0px 0px 0px;
-    font-weight: bolder;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-  }
-  .upload-btn {
-    all: unset;
-    padding: 10px 5px 10px 5px;
-    cursor: pointer;
-  }
-
-  .chat-container {
-    height: 60%;
-    width: 97%;
-    /* max-height: 280px;  */
-    overflow-y: auto;
-    max-height: 280px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-  }
-.user {
-    color: rgb(33, 100, 69);
-    font-weight: 550;
-    line-height: 30px;
-    padding: 10px;
-} 
-.ai{
-    color: black;
-    font-weight: 540;
-    line-height: 28px;
-    padding: 10px;
-
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
 }
 
-  .input-container {
-    width: 97%;
-    /* margin: 10px 0px 0px 0px; */
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    padding: 30px;
-    display: flex;
-    /* flex-direction: column; */
-    justify-content: center;
-    align-items: center;
-    column-gap: 20px;
+.main-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-#headline {
-    font-size: 18px;
-    margin-bottom: 10px;
+.navbar {
+  width: 97%;
+  margin-top: 10px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.upload-btn {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+}
+
+.upload-btn:hover {
+  background-color: #3e8e41;
+}
+
+.logo {
+  font-weight: bold;
+}
+
+.chat-container {
+  width: 97%;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  margin-top: 20px;
+  padding: 10px;
+}
+/* Comment */
+#fileInput{
+  display:none;
+}
+
+.input-container {
+  width: 97%;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #question {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    width:90%;
-    max-width: 100%;
-    margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 70%;
 }
 
 #submit-button {
-    background-color: #4CAF50;
-    margin-top: -10px;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  margin-left: 10px;
 }
 
 #submit-button:hover {
-    background-color: #3e8e41;
-} 
-
-.loader-animation{
-    display: none;
+  background-color: #3e8e41;
 }
 
-.active{
-    display: block;
-}
-
-
-/* HTML: <div class="loader"></div> */
 .loader {
-    width: 60px;
-    aspect-ratio: 2;
-    --_g: no-repeat radial-gradient(circle closest-side,#000 90%,#0000);
-    background: 
-      var(--_g) 0%   50%,
-      var(--_g) 50%  50%,
-      var(--_g) 100% 50%;
-    background-size: calc(100%/3) 50%;
-    animation: l3 1s infinite linear;
+  display: none;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 2s linear infinite;
+  margin-top: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  @keyframes l3 {
-      20%{background-position:0%   0%, 50%  50%,100%  50%}
-      40%{background-position:0% 100%, 50%   0%,100%  50%}
-      60%{background-position:0%  50%, 50% 100%,100%   0%}
-      80%{background-position:0%  50%, 50%  50%,100% 100%}
+  100% {
+    transform: rotate(360deg);
   }
+}
+
+.hidden {
+  display: none;
+}
+
+.user {
+  color: #216445;
+  font-weight: bold;
+}
+
+.ai {
+  color: #000;
+  font-weight: bold;
+  margin-top: 5px;
+}
