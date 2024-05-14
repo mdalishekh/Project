@@ -54,6 +54,10 @@
   margin-top: 20px;
   padding: 10px;
 }
+/* Comment */
+#fileInput{
+  display:none;
+}
 
 #fileInput {
   display: none;
