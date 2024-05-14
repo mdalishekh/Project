@@ -52,6 +52,10 @@
   padding: 10px;
 }
 
+#fileInput{
+  display:none;
+}
+
 .input-container {
   width: 97%;
   margin-top: 20px;
