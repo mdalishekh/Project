@@ -4,7 +4,7 @@ const questionInput = document.getElementById("question");
 const fileInput = document.getElementById("fileInput");
 const loader = document.getElementById("loader");
 // added commit
-// testing
+// testing phase
 submitButton.addEventListener("click", processQuestion);
 
 document.addEventListener("keypress", function (event) {
