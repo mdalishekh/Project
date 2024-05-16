@@ -3,7 +3,7 @@ const chatContainer = document.getElementById("chatContainer");
 const questionInput = document.getElementById("question");
 const fileInput = document.getElementById("fileInput");
 const loader = document.getElementById("loader");
-
+// added commit
 submitButton.addEventListener("click", processQuestion);
 
 document.addEventListener("keypress", function (event) {
