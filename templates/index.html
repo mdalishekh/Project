@@ -10,14 +10,24 @@
   <body>
     <div class="main-container">
       <!-- comment added -->
-      <div class="navbar">
+
+      <div class="navbar">   <!-- Navbar starts here   -->
+
         <label for="fileInput" class="upload-btn">Upload PDF</label>
         <input type="file" id="fileInput" name="file" accept=".pdf" />
+
+        
+        <p class="file-name" id="fileName"></p>
+        <div class="blob hidden"></div>
         <div class="logo">
-          <p>Chat with PDF</p>
+          <p>Light / Dark</p>
         </div>
+      </div>       <!-- Navbar ends here   -->
+ 
+
+      <div class="chat-container" id="chatContainer">
+        
       </div>
-      <div class="chat-container" id="chatContainer"></div>
       <div class="loader" id="loader"></div>
       <div class="input-container visible">
         <input type="text" id="question" placeholder="Ask Question Here" />
