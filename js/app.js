@@ -2,7 +2,7 @@ const submitButton = document.getElementById("submit-button");
 const chatContainer = document.getElementById("chatContainer");
 const questionInput = document.getElementById("question");
 const fileInput = document.getElementById("fileInput");
-const loader = document.getElementById("loader");
+// const loader = document.getElementById("loader");
 // added commit
 // testing phase
 submitButton.addEventListener("click", processQuestion);
@@ -37,17 +37,20 @@ async function processQuestion() {
 
   const formData = new FormData();
   formData.append("file", file);
-
+  const loader = document.createElement("div");
   try {
-    loader.style.display = "block";
-
-    const uploadResponse = await fetch("https://api.chatpdf.com/v1/sources/add-file", {
-      method: "POST",
-      headers: {
-        "x-api-key": "sec_5Q0hNiqKd2PlimXRbOVwGJ2xkCIZ6qSE",
-      },
-      body: formData,
-    });
+    loader.classList.add("active", "loader");
+    console.log(loader);
+    const uploadResponse = await fetch(
+      "https://api.chatpdf.com/v1/sources/add-file",
+      {
+        method: "POST",
+        headers: {
+          "x-api-key": "sec_5Q0hNiqKd2PlimXRbOVwGJ2xkCIZ6qSE",
+        },
+        body: formData,
+      }
+    );
 
     if (!uploadResponse.ok) {
       throw new Error(`Error uploading file: ${uploadResponse.statusText}`);
@@ -55,14 +58,14 @@ async function processQuestion() {
 
     const uploadData = await uploadResponse.json();
     const sourceId = uploadData.sourceId;
-
+    // loader.style.display = "block";
     const questionParagraph = document.createElement("p");
     questionParagraph.classList.add("user");
     questionParagraph.textContent = `YOU: ${question}`;
     chatContainer.appendChild(questionParagraph);
-
+    chatContainer.appendChild(loader);
     const answer = await getAnswer(sourceId, question);
-
+    loader.classList.remove("active");
     const answerParagraph = document.createElement("p");
     answerParagraph.classList.add("ai");
     answerParagraph.textContent = `AI: ${answer}`;
@@ -73,7 +76,6 @@ async function processQuestion() {
     console.error("Error:", error);
     alert("Error uploading file or processing question.");
   } finally {
-    loader.style.display = "none";
   }
 }
 
