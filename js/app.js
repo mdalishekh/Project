@@ -6,12 +6,75 @@ const loader = document.getElementById("loader");
 const blob = document.querySelector('.blob');
 const fileNameDisplay = document.getElementById('fileName');
 
-submitButton.addEventListener("click", processQuestion);
+let isFileUploadInProgress = false; // Flag to track whether file upload is in progress
+let sourceId = null; // Variable to store the sourceId
 
-document.addEventListener("keypress", function (event) {
-  if (event.key === "Enter") {
-    processQuestion();
+async function fileUpload() {
+  // If file upload is already in progress, return
+  if (isFileUploadInProgress) {
+    console.log("File upload already in progress");
+    return;
   }
+
+  console.log("Started");
+  const file = fileInput.files[0];
+
+  if (!file) {
+    console.log("No file selected");
+    return;
+  }
+
+  console.log("File Found");
+  
+  if (file.type !== "application/pdf") {
+    alert("Only PDF files are supported.");
+    return;
+  }
+
+  fileNameDisplay.textContent = `${file.name}`;
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    console.log("Trying to send file in API");
+    
+    isFileUploadInProgress = true; // Set flag to true indicating file upload is in progress
+    blob.style.display = 'block';
+
+    const uploadResponse = await fetch("https://api.chatpdf.com/v1/sources/add-file", {
+      method: "POST",
+      headers: {
+        "x-api-key": "sec_5Q0hNiqKd2PlimXRbOVwGJ2xkCIZ6qSE",
+      },
+      body: formData,
+    });
+
+    blob.style.display = 'none';
+    
+    console.log("File uploaded");
+
+    if (!uploadResponse.ok) {
+      throw new Error(`Error uploading file: ${uploadResponse.statusText}`);
+    }
+
+    const uploadData = await uploadResponse.json();
+    sourceId = uploadData.sourceId; // Set the sourceId
+    console.log("Source Id ==>", sourceId);
+
+    return sourceId; // Return the sourceId
+
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Error uploading file.");
+  } finally {
+    blob.style.display = "none";
+    isFileUploadInProgress = false; // Reset the flag to false after file upload completes
+  }
+}
+
+fileInput.addEventListener('change', async () => {
+  sourceId = await fileUpload();
 });
 
 async function processQuestion() {
@@ -24,46 +87,30 @@ async function processQuestion() {
 
   questionInput.value = "";
 
-  const file = fileInput.files[0];
-  loader.style.display = "block";
-  if (!file) {
-    alert("Please select a PDF file to upload.");
-    return;
-  }
-
-  if (file.type !== "application/pdf") {
-    alert("Only PDF files are supported.");
-    return;
-  }
-     fileNameDisplay.textContent = `${file.name}`;
-  const formData = new FormData();
-  formData.append("file", file);
-
-  try {
-    
-
-    // Show the blob animation
-        blob.style.display = 'block';
-
-    const uploadResponse = await fetch("https://api.chatpdf.com/v1/sources/add-file", {
-      method: "POST",
-      headers: {
-        "x-api-key": "sec_5Q0hNiqKd2PlimXRbOVwGJ2xkCIZ6qSE",
-      },
-      body: formData,
-    });
-    blob.style.display = 'none';
-
-    if (!uploadResponse.ok) {
-      throw new Error(`Error uploading file: ${uploadResponse.statusText}`);
+  if (!sourceId) {
+    const file = fileInput.files[0];
+    if (!file) {
+      alert("Please select a PDF file to upload.");
+      return;
     }
 
-    const uploadData = await uploadResponse.json();
-    const sourceId = uploadData.sourceId;
+    if (file.type !== "application/pdf") {
+      alert("Only PDF files are supported.");
+      return;
+    }
 
-    // Hide the blob animation
-      
+    fileNameDisplay.textContent = `${file.name}`;
+    sourceId = await fileUpload(); // Upload the file and get the sourceId
+  }
 
+  if (!sourceId) {
+    alert("Error obtaining source ID.");
+    return;
+  }
+
+  loader.style.display = "block";
+
+  try {
     const questionParagraph = document.createElement("p");
     questionParagraph.classList.add("user");
     questionParagraph.textContent = `YOU: ${question}`;
@@ -115,3 +162,10 @@ async function getAnswer(sourceId, question) {
   return responseData.content;
 }
 
+submitButton.addEventListener("click", processQuestion);
+
+document.addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    processQuestion();
+  }
+});
