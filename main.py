@@ -12,6 +12,7 @@ app = FastAPI()
 # Creating a route for testing our REST API with GET method
 @app.get('/test-api')
 def test_api():
+    LOGGER.info("OUR SERVER IS ACTIVE")
     return JSONResponse({"response": "Server is active"})
 
 
