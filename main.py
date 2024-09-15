@@ -25,7 +25,7 @@ async def get_registraion_details(request:Request):
         json_data = await request.json()
         status, user_email = insert_registarion_details(json_data)
         if status:
-            LOGGER.info("REGISTRATION DETAILS INSERTION HAS BEEN COMPLETED")
+            LOGGER.info(f"REGISTRATION DETAILS INSERTION FOR {user_email}  HAS BEEN COMPLETED")
             response = {
                 "status": status,
                 "response" : f"User {user_email} has been registered."
