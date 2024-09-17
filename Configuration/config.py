@@ -35,6 +35,10 @@ DB_PARAMETER = {
         'port': os.environ['DB_PORT']
     }
 
+# Email sending credentials
+EMAIL_SENDER = os.environ['EMAIL_SENDER']
+EMAIL_SENDER_PASSWORD = os.environ['EMAIL_SENDER_PASSWORD']
+
 # Building a connection with Postgres SQL 
 def db_connection():
         try:
@@ -66,7 +70,7 @@ def registration_insert_query():
             '''        
     return query        
 
-# Creating a table in Postgres SQL for registraion
+# Creating a table in Postgres SQL for Registraion
 def registration_create_query():
     query = f'''
             CREATE TABLE {REGISTRAION_TABLE_NAME} (
@@ -81,6 +85,33 @@ def registration_create_query():
             );
             '''
     return query        
+
+
+#  Creating a table in Postgres SQL for OTP verification    
+def otp_verification_create_query():
+    query = f'''
+             CREATE TABLE {OTP_TABLE_NAME} (
+                ID SERIAL PRIMARY KEY,
+                user_email VARCHAR,
+                OTP VARCHAR,
+                is_valid BOOLEAN,
+                otp_date DATE,
+                otp_time TIME
+            );
+            '''       
+
+# This function is responsible to insert user's registration data into database
+def otp_insert_query():
+    query = f'''
+            INSERT INTO otp_verification (user_email, OTP, is_valid, otp_date, otp_time)
+            VALUES (%s, %s, %s, %s, %s);
+             '''
+    return query
+
+# OTP validator fetch query
+FETCH_OTP = f"SELECT otp, is_valid FROM {OTP_TABLE_NAME} WHERE user_email = %s"
+
+
 
 # This function is resposible for returning a query to check the table exists or not 
 def is_table_exist_query(table_name):
