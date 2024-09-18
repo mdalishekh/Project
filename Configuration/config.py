@@ -98,7 +98,8 @@ def otp_verification_create_query():
                 otp_date DATE,
                 otp_time TIME
             );
-            '''       
+            '''  
+    return query         
 
 # This function is responsible to insert user's registration data into database
 def otp_insert_query():
