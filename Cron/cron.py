@@ -6,7 +6,7 @@ import time
 # This will print a log in server side 
 def cron_job():
     LOGGER.info("---------------------------------------------------------")
-    LOGGER.info(f"KEEPING SERVER ACTIVE IN EVERY 9 MINUTES {datetime.now().strftime('%Y-%m-%d at %H-%M-%S')}")
+    LOGGER.info(f"KEEPING SERVER ACTIVE IN EVERY MINUTE {datetime.now().strftime('%Y-%m-%d at %H-%M-%S')}")
     LOGGER.info("---------------------------------------------------------")
 
 # This function in controlling Crin expression
