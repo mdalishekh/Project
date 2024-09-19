@@ -6,6 +6,7 @@ from Configuration.config import *
 from Database.DatabaseHandler import *
 from Database.LoginAndOtpVerifier import otp_validator, authenticate_user
 from Emails.MailSender import *
+from Cron.cron import cron_scheduler
 import random
 
 # Initiating an instance for FastAPI 
@@ -28,6 +29,13 @@ app.add_middleware(
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
 )
+
+
+# Creating a route for keeping server active
+@app.get('/')
+def cron_expression():
+    cron_scheduler()
+    return JSONResponse({"response": "Our Application / Server is active"})
 
 # Creating a route for testing our REST API with GET method
 @app.get('/test-api')
