@@ -12,7 +12,7 @@ def cron_job():
 # This function in controlling Crin expression
 def cron_scheduler():
     scheduler = BackgroundScheduler()
-    trigger = CronTrigger(minute='*/9', hour='*', day='*', month='*', day_of_week='*')
+    trigger = CronTrigger(minute='*', hour='*', day='*', month='*', day_of_week='*')
     scheduler.add_job(lambda: cron_job(), trigger)
     scheduler.start()
     try:
