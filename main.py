@@ -26,7 +26,7 @@ origins = [
 # Add the CORS middleware to the FastAPI application
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Origins allowed to make requests
+    allow_origins=["*"],  # Origins allowed to make requests
     allow_credentials=True,  # Allow cookies to be sent with requests
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
