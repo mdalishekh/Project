@@ -16,6 +16,7 @@ app = FastAPI()
 origins = [
     "http://127.0.0.1:5500",  # Your frontend URL
     "http://localhost:5500",
+    "http://127.0.0.1:5501",
     "https://gocab.netlify.app",
     "https://gocab.netlify.app/",
     # You can add more origins here if needed
