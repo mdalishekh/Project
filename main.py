@@ -23,6 +23,7 @@ origins = [
     # You can add more origins here if needed
 ]
 
+
 # Add the CORS middleware to the FastAPI application
 app.add_middleware(
     CORSMiddleware,
