@@ -1,2 +1,0 @@
-# training
-# md ali shekh
