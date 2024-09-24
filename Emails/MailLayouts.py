@@ -100,19 +100,17 @@ def confirmation_mail_layout(user_first_name):
     <style>
         body {{
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #f4f4f4;  /* Changed to greyish background for the body */
             margin: 0;
+            padding: 20px;  /* Added padding to body for proper spacing */
         }}
         .container {{
-            background-color: white;
+            background-color: white;  /* Set white background for the template */
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
             max-width: 400px;
+            margin: 0 auto; /* Centering the container */
             text-align: center;
         }}
         .header {{
@@ -120,7 +118,7 @@ def confirmation_mail_layout(user_first_name):
             color: white;
             padding: 15px;
             font-size: 1.2em;
-            font-family:  Geneva, Tahoma, sans-serif;
+            font-family: Geneva, Tahoma, sans-serif;
             border-radius: 8px 8px 0 0;
         }}
         .content {{
@@ -131,7 +129,7 @@ def confirmation_mail_layout(user_first_name):
             color: white;
             padding: 10px;
             font-size: 1em;
-            font-family:  Geneva, Tahoma, sans-serif;
+            font-family: Geneva, Tahoma, sans-serif;
             border-radius: 4px;
             width: 80%;
             margin: 10px auto;
@@ -162,6 +160,5 @@ def confirmation_mail_layout(user_first_name):
     </div>
 </body>
 </html>
-
                            """
     return confirmation_layout
