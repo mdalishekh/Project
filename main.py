@@ -26,7 +26,7 @@ origins = [
 # Add the CORS middleware to the FastAPI application
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Origins allowed to make requests
+    allow_origins=["*"],  # Origins allowed to make requests
     allow_credentials=True,  # Allow cookies to be sent with requests
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
@@ -66,7 +66,7 @@ async def send_otp_api(request:Request):
                 LOGGER.info(f"OTP HAS BEEN SENT TO {user_email}")
                 response = {"status": status,"response" : f"{message} to {user_email}", "OTP" :OTP}
                 return  JSONResponse(response)
-            return JSONResponse({"status" : status, "error" : f"Sending OTP to {user_email} has been failed"}, status_code=500)
+            return JSONResponse({"status" : status, "error" : f"Sending OTP to {user_email} has been failed"}, status_code=200)
         return JSONResponse({"status" : is_done, "response" : message})
     except Exception as error:
         LOGGER.error(f"ERROR OCCURED WHILE SENDING OTP TO {user_email}")
@@ -106,13 +106,13 @@ async def otp_verification_api(request:Request):
             response = {"status": status,"response" : f"User has been verified confirmation e-mail has been sent to {user_email}"}
             return  JSONResponse(response)
         # If OTP is correct but confirmation e-mail not sent to user
-        return JSONResponse({"status" : status, "error" : f"Sending e-mail to {user_email} has been failed"}, status_code=500)
+        return JSONResponse({"status" : status, "error" : f"Sending e-mail to {user_email} has been failed"}, status_code=200)
     except Exception as error:
         LOGGER.error(f"ERROR OCCURED WHILE SENDING CONFIRMATION E-MAIL : {user_email}")
         return JSONResponse({"error occured while sending confirmation e-mail" : error}, status_code= 500)
                 
     
-# 4. Creating a route for User Login
+# 3. Creating a route for User Login
 @app.post('/api/v1/go-cab/authenticate')
 async def get_login_details_api(request:Request):
     try:
@@ -126,7 +126,7 @@ async def get_login_details_api(request:Request):
             LOGGER.info("USER AUTHENTICATION HAS BEEN COMPLETED")
             response = {"status" : status, "user" : user_email, "response" : message}
             return JSONResponse(response)
-        return JSONResponse({"status" : status, "user" : user_email, "error" : message}, status_code= 500)
+        return JSONResponse({"status" : status, "user" : user_email, "error" : message}, status_code= 200)
     except Exception as error:    
         LOGGER.error(f"ERROR OCCURED WHILE AUTHENTICATING USER : {error}")
         return JSONResponse({"error occured while authenticating user" : error}, status_code= 500)   
