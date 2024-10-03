@@ -130,5 +130,5 @@ def update_password(user_email:str, new_password:str):
         cursor.execute(update_password_query(), (new_password, CURRENT_DATE, CURRENT_TIME, user_email))  
         DB_CONNECTION.commit()
         cursor.close()       
-        return True, "Password chnaged successfully"
+        return True, "Password changed successfully"
     return False, "Can't change password"   
