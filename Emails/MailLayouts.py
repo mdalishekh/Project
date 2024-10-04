@@ -161,3 +161,88 @@ def confirmation_mail_layout(user_first_name):
 </html>
                            """
     return confirmation_layout
+
+def forgot_password_mail_layout(user_first_name, OTP):
+    forgot_layout = f"""
+                     <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Change OTP</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            background-color: #aaa7a7; /* Greyish background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            min-width: 320px;
+        }}
+        .email-container {{
+            background-color: #ffffff;
+            max-width: 400px;
+            width: 100%; /* Makes sure it adapts to different screen sizes */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Added box-shadow */
+            text-align: center;
+            margin: 0 auto; /* Ensures centering on desktop */
+        }}
+        .email-header {{
+            background-color: #000000;
+            color: #ffffff;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            margin: 0; /* Remove margin */
+        }}
+        .email-body {{
+            padding: 20px 20px 0 20px;
+            color: #333;
+        }}
+        .otp-box {{
+            background-color: #000000;
+            color: #ffffff;
+            display: inline-block;
+            padding: 10px 40px; 
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin: 20px 0;
+        }}
+        .email-footer {{
+            border-top: 1px solid #e0e0e0;
+            padding-top: 10px;
+            font-size: 12px;
+            color: #888888;
+            margin-top: 20px;
+        }}
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            Dear, {user_first_name}
+        </div>
+        <div class="email-body">
+            <p style="padding-top: -3px;">We have been requested to change your password.<br><br>
+            Please use the OTP below to confirm it's you:</p>
+            <div class="otp-box">{OTP}</div>
+            
+            <p>Please note this OTP will expire in 5 minutes</p>
+        </div>
+        <div class="email-footer">
+            This is an automated email. Please do not reply.
+        </div>
+    </div>
+</body>
+</html>
+
+                     """
+    return forgot_layout
