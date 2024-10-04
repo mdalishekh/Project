@@ -1,4 +1,3 @@
-import os
 import smtplib
 from email.mime.text import MIMEText
 from Emails.MailLayouts import *
@@ -22,7 +21,7 @@ def send_otp_by_mail(recipient:str, user_first_name:str, OTP:int):
             server.sendmail(EMAIL_SENDER, recipient, msg.as_string())
         return True
     except Exception as error:
-        logging.error(f"ERROR OCCURED WHILE SEND OTP TO {recipient} :" f"{error}")
+        logging.error(f"ERROR OCCURED WHILE SENDING OTP TO {recipient} :" f"{error}")
         return False
     
     
@@ -44,15 +43,16 @@ def registration_success_mail(recipient:str, user_first_name:str):
             server.sendmail(EMAIL_SENDER, recipient, msg.as_string())
         return True
     except Exception as error:
-        logging.error(f"ERROR OCCURED WHILE SEND OTP TO {recipient} :" f"{error}")
+        logging.error(f"ERROR OCCURED WHILE SENDING CONFIRMATION TO {recipient} :" f"{error}")
         return False    
+    
     
 # This function is responsible for sending OTP to password change
 def forgot_password_otp_send(user_email:str, user_first_name:str, OTP:int):
     try:
         logging.info(f"Sending OTP via mail to {user_email}")
         # Getting HTML layout for sending OTP
-        html_body = otp_mail_layout(user_first_name, OTP)
+        html_body = forgot_password_mail_layout(user_first_name, OTP)
         # Create MIMEText object with 'html' MIME type
         msg = MIMEText(html_body, 'html')
         msg['Subject'] = f"OTP for changing password"
@@ -65,5 +65,5 @@ def forgot_password_otp_send(user_email:str, user_first_name:str, OTP:int):
             server.sendmail(EMAIL_SENDER, user_email, msg.as_string())
         return True
     except Exception as error:
-        logging.error(f"ERROR OCCURED WHILE SEND OTP TO {user_email} :" f"{error}")
+        logging.error(f"ERROR OCCURED WHILE SENDING OTP FOR CHANGING PASSWORD TO {user_email} :" f"{error}")
         return False    
