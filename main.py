@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from Configuration.config import *
+from Configuration.sqlQuery import *
 from Database.DatabaseHandler import *
 from Database.LoginAndOtpVerifier import *
 from Emails.MailSender import *
@@ -33,7 +34,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-
 # Creating a route for keeping server active
 @app.get('/')
 def cron_expression():
@@ -43,34 +43,34 @@ def cron_expression():
 # Creating a route for testing our REST API with GET method
 @app.get('/test-api')
 def test_api():
-    LOGGER.info("Our Application / Server is active")
+    logging.info("Our Application / Server is active")
     return JSONResponse({"response": "Our Application / Server is active"})
    
 # 1.Creating a route for sending OTP to users via e-mail
 @app.post('/api/v1/go-cab/send-otp')
 async def send_otp_api(request:Request):
     try:
-        LOGGER.info("---------------------------------------------------------")
-        LOGGER.info("OTP SENDING HAS BEEN INITIATED")
+        logging.info("---------------------------------------------------------")
+        logging.info("OTP SENDING HAS BEEN INITIATED")
         json_data = await request.json()
-        user_email = json_data['userEmail']
-        user_first_name = json_data['firstName']
+        user_email = json_data.get('userEmail')
+        user_first_name = json_data.get('firstName')
         OTP = random.randint(100000, 999999)
         # Inserting OTP details in Database
         is_done, message = insert_otp_details(user_email, OTP)
         # Sending OTP to user email if user is not registered with same email
         if is_done:
             status = send_otp_by_mail(user_email, user_first_name, OTP)
-            LOGGER.info(f"Generated OTP for {user_email} is : {OTP}")
+            logging.info(f"Generated OTP for {user_email} is : {OTP}")
             # If OTP is successfully sent to user email
             if status:
-                LOGGER.info(f"OTP HAS BEEN SENT TO {user_email}")
-                response = {"status": status,"response" : f"{message} to {user_email}", "OTP" :OTP}
-                return  JSONResponse(response)
-            return JSONResponse({"status" : status, "error" : f"Sending OTP to {user_email} has been failed"}, status_code=200)
-        return JSONResponse({"status" : is_done, "response" : message})
+                logging.info(f"OTP HAS BEEN SENT TO {user_email}")
+                response = {"status": status,"message" : f"{message}", "OTP" : OTP}
+                return  JSONResponse(response, status_code=200)
+            return JSONResponse({"status" : status, "message" : f"Failed to send OTP"}, status_code=200)
+        return JSONResponse({"status" : is_done, "message" : message}, status_code=200)
     except Exception as error:
-        LOGGER.error(f"ERROR OCCURED WHILE SENDING OTP TO {user_email}")
+        logging.error(f"ERROR OCCURED WHILE SENDING OTP TO {user_email}")
         return JSONResponse({"error occured while sending otp" : error}, status_code= 500)
     
     
@@ -78,38 +78,37 @@ async def send_otp_api(request:Request):
 @app.post('/api/v1/go-cab/otp-verification')
 async def otp_verification_api(request:Request):
     try:
-        LOGGER.info("---------------------------------------------------------")
-        LOGGER.info("OTP VERIFICATION HAS BEEN INITIATED")
+        logging.info("---------------------------------------------------------")
+        logging.info("OTP VERIFICATION HAS BEEN INITIATED")
         # Getting JSON data  
         json_data = await request.json()
-        user_email = json_data['registrationDetails']['userEmail']
-        user_first_name = json_data['registrationDetails']['firstName']
-        OTP = int(json_data['OTP'])        
+        user_email = json_data.get('registrationDetails').get('userEmail')
+        user_first_name = json_data.get('registrationDetails').get('firstName')
+        OTP = int(json_data.get('OTP'))        
         
         # validating OTP if it's correct or not
         is_otp_valid , message = otp_validator(user_email, OTP)
         if is_otp_valid:
             # If OTP verification is success
-            LOGGER.info(f"User {user_email} has been verified")
+            logging.info(f"User {user_email} has been verified")
             # If OTP verified then insert user details in database
             insert_registration_details(json_data)
             # Now sending confirmation email to user , that user have been registered with us
             status = registration_success_mail(user_email, user_first_name)
             # Now De-validating / Expiring OTP for user 
             otp_devalidator(user_email)
-            
         else:
-            LOGGER.info("OTP validation has failed")
-            return JSONResponse({"status" : False, "error" : f"OTP entered by {user_email} {message}"})
+            logging.info("OTP validation has failed")
+            return JSONResponse({"status" : False, "message" : message})
         # If OTP is correct and confirmation email sent to user
         if status:
-            LOGGER.info(f"CONFIRMATION E-MAIL HAS BEEN SENT TO THE {user_email}")
-            response = {"status": status,"response" : f"User has been verified confirmation e-mail has been sent to {user_email}"}
+            logging.info(f"CONFIRMATION E-MAIL HAS BEEN SENT TO THE {user_email}")
+            response = {"status": status,"message" : message}
             return  JSONResponse(response)
         # If OTP is correct but confirmation e-mail not sent to user
-        return JSONResponse({"status" : status, "error" : f"Sending e-mail to {user_email} has been failed"}, status_code=200)
+        return JSONResponse({"status" : status, "message" : f"Failed to register"}, status_code=200)
     except Exception as error:
-        LOGGER.error(f"ERROR OCCURED WHILE SENDING CONFIRMATION E-MAIL : {user_email}")
+        logging.error(f"ERROR OCCURED WHILE SENDING CONFIRMATION E-MAIL : {user_email}")
         return JSONResponse({"error occured while sending confirmation e-mail" : error}, status_code= 500)
                 
     
@@ -117,17 +116,90 @@ async def otp_verification_api(request:Request):
 @app.post('/api/v1/go-cab/authenticate')
 async def get_login_details_api(request:Request):
     try:
-        LOGGER.info("---------------------------------------------------------")
-        LOGGER.info("USER AUTHENTICATION HAS BEEN INITIATED")
+        logging.info("---------------------------------------------------------")
+        logging.info("USER AUTHENTICATION HAS BEEN INITIATED")
         json_data = await request.json()
-        user_email = json_data['userEmail']
-        password = json_data['password']
+        user_email = json_data.get('userEmail')
+        password = json_data.get('password')
         status, message = authenticate_user(user_email, password)
         if status:
-            LOGGER.info("USER AUTHENTICATION HAS BEEN COMPLETED")
-            response = {"status" : status, "user" : user_email, "response" : message}
+            logging.info("USER AUTHENTICATION HAS BEEN COMPLETED")
+            response = {"status" : status, "user" : user_email, "message" : message}
             return JSONResponse(response)
-        return JSONResponse({"status" : status, "user" : user_email, "error" : message}, status_code= 200)
+        return JSONResponse({"status" : status, "user" : user_email, "message" : message}, status_code= 200)
     except Exception as error:    
-        LOGGER.error(f"ERROR OCCURED WHILE AUTHENTICATING USER : {error}")
+        logging.error(f"ERROR OCCURED WHILE AUTHENTICATING USER : {error}")
         return JSONResponse({"error occured while authenticating user" : error}, status_code= 500)   
+    
+    
+# Creating a route for Forgot password request email verify
+@app.post('/api/v1/go-cab/verify-email')
+async def forgot_email_verify_api(request:Request):
+    try:
+        logging.info("---------------------------------------------------------")
+        logging.info("EMAIL VERIFICATION FOR PASSWORD CHANGE HAS BEEN INITIATED")
+        json_data = await request.json()
+        user_email = json_data.get("userEmail")
+        logging.info(f"Verifying email regsitered or not {user_email}")
+        # Checking if the user exist or not , If exist then getting True with their First name
+        is_exist = is_user_exist(user_email, REGISTRAION_TABLE_NAME)
+        if is_exist:
+            logging.info(f"User with email {user_email} exist")
+            fisrt_name = get_first_name(user_email)
+            OTP = random.randint(100000, 999999)
+            logging.info(f"Generated OTP for password change : {OTP}")
+            db_status, message = insert_forgot_otp(user_email, OTP)
+            status = forgot_password_otp_send(user_email, fisrt_name, OTP)
+            if status and db_status:
+                logging.info(f"OTP has been sent to {user_email}")
+                return JSONResponse({"status" : status, "message" : message, "OTP" : OTP}, status_code=200)
+            return JSONResponse({"status" : False, "message" : f"Failed to verify"},status_code=200)
+        return JSONResponse({"status" : False, "message" : f"User not exist"},status_code=200)
+    except Exception as error:
+        logging.error(f"ERROR OCCURED WHILE VERIFYING EMAIL : {error}")
+        return JSONResponse({"error occured while verifying email" : error}, status_code= 500)
+
+
+# Creating a route for Forgot password request OTP verify
+@app.post('/api/v1/go-cab/forgot-verify-otp')
+async def forgot_otp_verify_api(request: Request):
+    try:
+        logging.info("---------------------------------------------------------")
+        logging.info("OTP VERIFICATION FOR PASSWORD CHANGE HAS BEEN INITIATED")
+        json_data = await request.json()
+        user_email = json_data.get('userEmail')
+        OTP = json_data.get('OTP')
+        is_otp_valid , message = otp_validator(user_email, OTP)
+        if is_otp_valid:
+            logging.info("OTP verified successfully")
+            otp_devalidator(user_email)
+            logging.info("Now OTP has been De-Validated")
+            # Making user eligible to change their password
+            password_change_eligibility(user_email, True)
+            return JSONResponse({"status" : True, "message" : "You have been verified"},status_code = 200)
+        return JSONResponse({"status" : True, "message" : message},status_code = 200)
+    except Exception as error:
+        logging.error(f"ERROR OCCURED WHILE VERIFYING OTP : {error}")
+        return JSONResponse({"error occured while verifying OTP" : error}, status_code= 500)
+    
+    
+# Creating a route for Forgot password request Update password
+@app.post('/api/v1/go-cab/new-password')
+async def forgot_otp_verify_api(request: Request):
+    try:
+        logging.info("---------------------------------------------------------")
+        logging.info("CHANGING PASSWORD HAS BEEN INITIATED")
+        json_data = await request.json()
+        user_email = json_data.get('userEmail')
+        new_password = json_data.get('newPassword')
+        if is_user_eligible(user_email):
+            logging.info("User is eligible to change their password")
+            status, message = update_password(user_email, new_password)
+            if status:
+                password_change_eligibility( user_email, False) # Making user ineligible to change their password
+                logging.info(f"Changing password for {user_email}")
+                return JSONResponse({"status" : True, "message" : message}, status_code= 200)
+        return JSONResponse({"status" : False, "message" : "Can't change password"}, status_code= 200)
+    except Exception as error:
+        logging.error(f"ERROR OCCURED WHILE CHANGING PASSWORD : {error}")
+        return JSONResponse({"error occured while changing password" : error}, status_code= 500)
