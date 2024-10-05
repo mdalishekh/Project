@@ -113,7 +113,7 @@ async def otp_verification_api(request:Request):
     
 # 3. Creating a route for User Login
 @app.post('/api/v1/go-cab/authenticate')
-async def get_login_details_api(request:Request):
+async def user_login_api(request:Request):
     try:
         logging.info("---------------------------------------------------------")
         logging.info("USER AUTHENTICATION HAS BEEN INITIATED")
@@ -123,9 +123,10 @@ async def get_login_details_api(request:Request):
         status, message = authenticate_user(user_email, password)
         if status:
             logging.info("USER AUTHENTICATION HAS BEEN COMPLETED")
-            response = {"status" : status, "user" : user_email, "message" : message}
+            first_name = get_first_name(user_email)
+            response = {"status" : status, "userEmail" : user_email, "firstName" : first_name, "message" : message}
             return JSONResponse(response)
-        return JSONResponse({"status" : status, "user" : user_email, "message" : message}, status_code= 200)
+        return JSONResponse({"status" : status, "userEmail" : user_email, "message" : message}, status_code= 200)
     except Exception as error:    
         logging.error(f"ERROR OCCURED WHILE AUTHENTICATING USER : {error}")
         return JSONResponse({"error occured while authenticating user" : error}, status_code= 500)   
