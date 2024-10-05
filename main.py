@@ -176,7 +176,7 @@ async def forgot_otp_verify_api(request: Request):
             # Making user eligible to change their password
             password_change_eligibility(user_email, True)
             return JSONResponse({"status" : True, "message" : "You have been verified"},status_code = 200)
-        return JSONResponse({"status" : True, "message" : message},status_code = 200)
+        return JSONResponse({"status" : False, "message" : message},status_code = 200)
     except Exception as error:
         logging.error(f"ERROR OCCURED WHILE VERIFYING OTP : {error}")
         return JSONResponse({"error occured while verifying OTP" : error}, status_code= 500)
