@@ -14,7 +14,7 @@ def registration_data_filter(registration_json_data):
     phone_number = json_data.get('phoneNumber')
     password = json_data.get('password')
     # insert values tuple 
-    insert_values = (user_email, first_name, last_name, phone_number, password, CURRENT_DATE, CURRENT_TIME)
+    insert_values = (user_email, first_name, last_name, str(phone_number), password, CURRENT_DATE, CURRENT_TIME)
     return insert_values, user_email
     
     
