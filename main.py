@@ -114,7 +114,7 @@ async def otp_verification_api(request:Request):
     
 # 3. Creating a route for User Login
 @app.post('/api/v1/go-cab/authenticate')
-async def get_login_details_api(request:Request):
+async def user_login_api(request:Request):
     try:
         logging.info("---------------------------------------------------------")
         logging.info("USER AUTHENTICATION HAS BEEN INITIATED")
@@ -124,9 +124,10 @@ async def get_login_details_api(request:Request):
         status, message = authenticate_user(user_email, password)
         if status:
             logging.info("USER AUTHENTICATION HAS BEEN COMPLETED")
-            response = {"status" : status, "user" : user_email, "message" : message}
+            first_name = get_first_name(user_email)
+            response = {"status" : status, "userEmail" : user_email, "firstName" : first_name, "message" : message}
             return JSONResponse(response)
-        return JSONResponse({"status" : status, "user" : user_email, "message" : message}, status_code= 200)
+        return JSONResponse({"status" : status, "userEmail" : user_email, "message" : message}, status_code= 200)
     except Exception as error:    
         logging.error(f"ERROR OCCURED WHILE AUTHENTICATING USER : {error}")
         return JSONResponse({"error occured while authenticating user" : error}, status_code= 500)   
@@ -151,9 +152,10 @@ async def forgot_email_verify_api(request:Request):
             db_status, message = insert_forgot_otp(user_email, OTP)
             status = forgot_password_otp_send(user_email, fisrt_name, OTP)
             if status and db_status:
-                logging.info(f"OTP has been sent to {user_email}")
+                logging.info(f"OTP has been sent to '{user_email}' ")
                 return JSONResponse({"status" : status, "message" : message, "OTP" : OTP}, status_code=200)
             return JSONResponse({"status" : False, "message" : f"Failed to verify"},status_code=200)
+        logging.error(f"No user exist with email = '{user_email}' ")
         return JSONResponse({"status" : False, "message" : f"User not exist"},status_code=200)
     except Exception as error:
         logging.error(f"ERROR OCCURED WHILE VERIFYING EMAIL : {error}")
@@ -172,8 +174,9 @@ async def forgot_otp_verify_api(request: Request):
         is_otp_valid , message = otp_validator(user_email, OTP)
         if is_otp_valid:
             logging.info("OTP verified successfully")
+            logging.info(f"User '{user_email}' is now Authorized / Verified to change their password")
             otp_devalidator(user_email)
-            logging.info("Now OTP has been De-Validated")
+            logging.info("Now OTP has been De-Validated or Expired")
             # Making user eligible to change their password
             password_change_eligibility(user_email, True)
             return JSONResponse({"status" : True, "message" : "You have been verified"},status_code = 200)
@@ -194,11 +197,14 @@ async def forgot_otp_verify_api(request: Request):
         new_password = json_data.get('newPassword')
         if is_user_eligible(user_email):
             logging.info("User is eligible to change their password")
+            logging.info(f"Changing password for {user_email}")
             status, message = update_password(user_email, new_password)
             if status:
                 password_change_eligibility( user_email, False) # Making user ineligible to change their password
-                logging.info(f"Changing password for {user_email}")
+                logging.info(F"PASSWORD CHANGED SUCCESSFULLY FOR '{user_email}' ")
                 return JSONResponse({"status" : True, "message" : message}, status_code= 200)
+            logging.error(f"Couldn't change password for {user_email}")
+        logging.error(f"User '{user_email}' is not Authorized / Verified to change their password")    
         return JSONResponse({"status" : False, "message" : "Can't change password"}, status_code= 200)
     except Exception as error:
         logging.error(f"ERROR OCCURED WHILE CHANGING PASSWORD : {error}")

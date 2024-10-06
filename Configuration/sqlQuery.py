@@ -14,7 +14,7 @@ def registration_create_query():
                 user_email VARCHAR,         
                 first_name VARCHAR,         
                 last_name VARCHAR,          
-                phone_number BIGINT,        
+                phone_number VARCHAR,        
                 user_password VARCHAR,      
                 registration_date DATE,     
                 registration_time TIME      

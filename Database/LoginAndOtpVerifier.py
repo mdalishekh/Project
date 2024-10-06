@@ -14,10 +14,10 @@ def otp_validator(user_email, OTP):
         if OTP == int(fetched_otp):
             logging.info("OTP has been verified")
             return True, "You have been registered"
-        logging.info("OTP is incorrect")
+        logging.error(f"User '{user_email}' entered an incorrect OTP")
         return False, "Incorrect OTP"
-    logging.info("OTP is invalid or expired")
-    return False, "OTP is invalid or expired"
+    logging.error(f"OTP has been expired for user '{user_email}' ")
+    return False, "OTP is expired"
 
 
 # This function is responsible to authenticate users
@@ -34,12 +34,12 @@ def authenticate_user(user_email, user_password):
         cursor.close()
         if fetched_password == user_password:
             message = f"Login successfully"
-            logging.info(f"User {user_email} has been authenticated")
+            logging.info(f"User '{user_email}' has been authenticated")
             return True, message
         message = "Incorrect password"
         logging.error(message)    
         return False, "Incorrect password"
-    message = f"User {user_email} not exist"
+    message = f"User '{user_email}' not exist"
     logging.error(message)
     return False, "User not exist"
 
