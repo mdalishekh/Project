@@ -14,7 +14,7 @@ def otp_validator(user_email, OTP):
         if OTP == int(fetched_otp):
             logging.info("OTP has been verified")
             return True, "You have been registered"
-        logging.error(f"User '{user_email}' entered and incorrect OTP")
+        logging.error(f"User '{user_email}' entered an incorrect OTP")
         return False, "Incorrect OTP"
     logging.error(f"OTP has been expired for user '{user_email}' ")
     return False, "OTP is expired"
