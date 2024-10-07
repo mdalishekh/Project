@@ -8,8 +8,10 @@ load_dotenv()
 
 
 # Current Date and Time
-CURRENT_DATE = datetime.now().strftime('%Y-%m-%d')
-CURRENT_TIME = datetime.now().strftime('%H:%M:%S')
+def date_time():
+    CURRENT_DATE = datetime.now().strftime('%Y-%m-%d')
+    CURRENT_TIME = datetime.now().strftime('%H:%M:%S')
+    return CURRENT_DATE, CURRENT_TIME
 
 # Setting Up Logger instead of print()
 logging.basicConfig(level=logging.INFO,
