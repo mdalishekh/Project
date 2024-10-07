@@ -13,6 +13,7 @@ def registration_data_filter(registration_json_data):
     last_name = json_data.get('lastName')
     phone_number = json_data.get('phoneNumber')
     password = json_data.get('password')
+    CURRENT_DATE, CURRENT_TIME = date_time()
     # insert values tuple 
     insert_values = (user_email, first_name, last_name, str(phone_number), password, CURRENT_DATE, CURRENT_TIME)
     return insert_values, user_email
@@ -60,6 +61,7 @@ def insert_otp_details(user_email, OTP):
     logging.info(f"Checking if {user_email} already exist or not in OTP Table")           
     # cursor.execute(is_user_exist(user_email, OTP_TABLE_NAME), (user_email,))
     exists = is_user_exist(user_email, OTP_TABLE_NAME) 
+    CURRENT_DATE, CURRENT_TIME = date_time()
     # If user has already generated an OTP before
     if exists:
         logging.info(f"{user_email} already exist in OTP table")
@@ -95,6 +97,7 @@ def insert_otp_details(user_email, OTP):
 # This function is responsible for storing forgot password OTP in Database
 def insert_forgot_otp(user_email, OTP):
     try:
+        CURRENT_DATE, CURRENT_TIME = date_time()
         cursor = DB_CONNECTION.cursor()
         try :
             cursor.execute(update_otp_query(), (str(OTP), CURRENT_DATE, CURRENT_TIME, user_email))
@@ -114,6 +117,7 @@ def insert_forgot_otp(user_email, OTP):
 def password_change_eligibility(user_email, is_eligible):
     cursor = DB_CONNECTION.cursor()
     user_exist = is_user_exist(user_email, OTP_TABLE_NAME)
+    CURRENT_DATE, CURRENT_TIME = date_time()
     if user_exist:
         cursor.execute(can_change_allow_query(), (CURRENT_DATE, CURRENT_TIME, is_eligible, user_email))  
         DB_CONNECTION.commit()
@@ -126,9 +130,39 @@ def password_change_eligibility(user_email, is_eligible):
 def update_password(user_email:str, new_password:str):
     cursor = DB_CONNECTION.cursor()
     user_exist = is_user_exist(user_email, REGISTRAION_TABLE_NAME)
+    CURRENT_DATE, CURRENT_TIME = date_time()
     if user_exist:
         cursor.execute(update_password_query(), (new_password, CURRENT_DATE, CURRENT_TIME, user_email))  
         DB_CONNECTION.commit()
         cursor.close()       
         return True, "Password changed successfully"
     return False, "Can't change password"   
+
+
+# This function is responsible to Insert Booking details in Database
+def insert_booking_details(json_data):
+    try:
+        # Filtering User's and Booking details 
+        user_email = json_data.get("userEmail")
+        pickup_location = json_data.get("pickUpLocation")
+        drop_location = json_data.get("dropLocation")
+        
+        cursor = DB_CONNECTION.cursor() # Building cursor for Database
+        # Creating a booking table if it doesn't exists
+        if not is_table_exist(BOOKING_TABLE_NAME):
+            cursor.execute(booking_create_query())
+            logging.info("Booking table has been created")
+        # Checking if the user exist or not 
+        exist = is_user_exist(user_email, REGISTRAION_TABLE_NAME)
+        if exist:
+            CURRENT_DATE, CURRENT_TIME = date_time()
+            cursor.execute(booking_insert_query(), (user_email, pickup_location, drop_location, CURRENT_DATE, CURRENT_TIME))
+            logging.info(f"User : {user_email}")
+            logging.info("Booking data has been inserted in database")
+            DB_CONNECTION.commit()
+            cursor.close()
+            return True
+        return False
+    except Exception as error:
+        logging.error("Error occurred while creating table in database :", error)
+        return False

@@ -4,6 +4,8 @@ from Configuration.config import *
 # Setting a table name to be created in run time 
 REGISTRAION_TABLE_NAME  = 'registration_details'
 OTP_TABLE_NAME = 'otp_verification'
+BOOKING_TABLE_NAME = 'bookings'
+
 
 
 # Creating a table in Postgres SQL for Registraion
@@ -62,6 +64,40 @@ def otp_insert_query():
             INSERT INTO {OTP_TABLE_NAME} (user_email, OTP, is_valid, otp_date, otp_time, can_change_password)
             VALUES (%s, %s, %s, %s, %s, %s);
              '''
+    return query
+
+
+# This function is responsible to return Booking table create query
+def booking_create_query():
+    query = f"""
+            CREATE TABLE {BOOKING_TABLE_NAME} (
+            id SERIAL PRIMARY KEY,
+            user_email VARCHAR,
+            pickup_location VARCHAR,
+            drop_location VARCHAR,
+            booking_date DATE,
+            booking_time TIME
+            );
+            """
+    return query
+
+
+# This function is responsible to create Booking table
+def booking_create_table():
+    try:
+        cursor = DB_CONNECTION.cursor()
+        cursor.execute(booking_create_query())
+    except:
+        return None
+
+
+# This function is responsible to return Booking table insert query
+def booking_insert_query():
+    query = f"""
+            INSERT INTO {BOOKING_TABLE_NAME} 
+            (user_email, pickup_location, drop_location, booking_date, booking_time)
+            VALUES (%s, %s, %s, %s, %s);
+            """
     return query
 
 

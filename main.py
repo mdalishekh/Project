@@ -96,16 +96,16 @@ async def otp_verification_api(request:Request):
             status = registration_success_mail(user_email, user_first_name)
             # Now De-validating / Expiring OTP for user 
             otp_devalidator(user_email)
-        else:
-            logging.info("OTP validation has failed")
-            return JSONResponse({"status" : False, "message" : message})
-        # If OTP is correct and confirmation email sent to user
-        if status:
-            logging.info(f"CONFIRMATION E-MAIL HAS BEEN SENT TO THE {user_email}")
-            response = {"status": status,"message" : message}
-            return  JSONResponse(response)
-        # If OTP is correct but confirmation e-mail not sent to user
-        return JSONResponse({"status" : status, "message" : f"Failed to register"}, status_code=200)
+            # If OTP is correct and confirmation Email sent to user
+            if status:
+                logging.info(f"CONFIRMATION E-MAIL HAS BEEN SENT TO THE {user_email}")
+                response = {"status": status,"message" : message}
+                return  JSONResponse(response)
+            # If OTP is correct but confirmation E-mail not sent to user
+            return JSONResponse({"status" : status, "message" : f"Failed to register"}, status_code=200)
+        logging.info("OTP validation has failed")
+        return JSONResponse({"status" : False, "message" : message})
+        
     except Exception as error:
         logging.error(f"ERROR OCCURED WHILE SENDING CONFIRMATION E-MAIL : {user_email}")
         return JSONResponse({"error occured while sending confirmation e-mail" : error}, status_code= 500)
@@ -132,7 +132,7 @@ async def user_login_api(request:Request):
         return JSONResponse({"error occured while authenticating user" : error}, status_code= 500)   
     
     
-# Creating a route for Forgot password request email verify
+# 4. Creating a route for Forgot password request email verify
 @app.post('/api/v1/go-cab/verify-email')
 async def forgot_email_verify_api(request:Request):
     try:
@@ -161,7 +161,7 @@ async def forgot_email_verify_api(request:Request):
         return JSONResponse({"error occured while verifying email" : error}, status_code= 500)
 
 
-# Creating a route for Forgot password request OTP verify
+# 5. Creating a route for Forgot password request OTP verify
 @app.post('/api/v1/go-cab/forgot-verify-otp')
 async def forgot_otp_verify_api(request: Request):
     try:
@@ -185,7 +185,7 @@ async def forgot_otp_verify_api(request: Request):
         return JSONResponse({"error occured while verifying OTP" : error}, status_code= 500)
     
     
-# Creating a route for Forgot password request Update password
+# 6. Creating a route for Forgot password request Update password
 @app.post('/api/v1/go-cab/new-password')
 async def forgot_otp_verify_api(request: Request):
     try:
@@ -208,3 +208,20 @@ async def forgot_otp_verify_api(request: Request):
     except Exception as error:
         logging.error(f"ERROR OCCURED WHILE CHANGING PASSWORD : {error}")
         return JSONResponse({"error occured while changing password" : error}, status_code= 500)
+    
+    
+# 7. Creating a route for Inserting Booking data in database
+@app.post('/api/v1/go-cab/book-ride')
+async def insert_booking_api(request: Request):
+    try:
+        logging.info("---------------------------------------------------------")
+        logging.info("CAB BOOKING HAS BEEN INITIATED")
+        json_data = await request.json()
+        status = insert_booking_details(json_data)
+        if status:
+            logging.info("CAB BOOKED SUCCESSFULLY")
+            return JSONResponse({"status" : True, "message" : "You're cab is booked"})  
+        return JSONResponse({"status" : False, "message" : "User not exist"})
+    except Exception as error:
+        logging.error(f"ERROR OCCURED WHILE INSERTING BOOKING DATA : {error}")
+        return JSONResponse({"error occured while inserting booking data " : error}, status_code= 500)
