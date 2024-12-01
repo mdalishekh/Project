@@ -30,10 +30,10 @@ app.add_middleware(
 
 
 # Creating a route for testing our REST API with GET method
-@app.get('/test-api')
+@app.get('/test')
 def test_api():
-    print("----------------------")
+    print("------------------------------")
     print("\tServer is active")
-    print("----------------------")
+    print("------------------------------")
     return JSONResponse({"response": "Our Server is active"})
  
