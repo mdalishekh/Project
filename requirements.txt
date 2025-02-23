@@ -1,0 +1,17 @@
+django
+django-cors-headers
+gunicorn
+Django
+djangorestframework
+python-dotenv
+openai
+PyPDF2
+python-docx
+pinecone-client
+langchain
+langchain-openai
+langchain-pinecone
+pytesseract
+pillow
+pdf2image
+opencv-python
