@@ -1,7 +1,7 @@
 # This files handles pinecone insertion 
 import os
 import openai
-import logging
+from pinecone import Pinecone
 from langchain_pinecone import PineconeVectorStore
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.getenv('OPENAI_API_KEY')
 os.getenv("PINECONE_API_KEY")
+# openai.api_key = OPENAI_API_KEY
 
 class VectorStore:
     """_summary_
@@ -34,8 +35,9 @@ class VectorStore:
         docs = text_splitter.split_documents(format_text)
         print("text splitted")
         print("vector storing")
+        # pc  = Pinecone(PINECONE_API_KEY)
         vectors = PineconeVectorStore.from_documents(docs, 
                         index_name= PINECONE_INDEX_NAME, 
                         embedding= OpenAIEmbeddings())
-        print("vector stored")
+        print("Vector data stored")
         

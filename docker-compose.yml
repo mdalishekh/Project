@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  web:
+    image: django_ocr_image
+    build: .
+    container_name: django_ocr_cont
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env  # Load environment variables from .env file

@@ -1,7 +1,7 @@
 # Rest APIs for uploading files and question answering
 import os
 import uuid
-import time
+import shutil
 from django.conf import settings
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -14,13 +14,17 @@ from chat.api.file_reader import TextExtractor
 from chat.api.vector_store import VectorStore
 from chat.api.vector_search import GetAnswer
 from chat.configuration.config import logging
+
   
+@api_view(["GET"])
+def test_api(request: Request):
+    logging.info("Server is active")
+    return JsonResponse({"message" : "Server is active"})  
     
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])  
 def upload_file(request: Request):
-    start_time = time.time()
-    logging.info("Started API")
+    logging.info("File Upload API started")
     file: UploadedFile = request.FILES.get('file')  
     # If no file sent then returning an error message
     if not file:
@@ -40,12 +44,9 @@ def upload_file(request: Request):
     text_data = text_extractor.extract_text(file_path)
     # Generating source 
     source_id = str(uuid.uuid4())
-    logging.info(source_id)
+    logging.info(f"Source ID : {source_id}")
     vectors = VectorStore()
     vectors.pinecone_insertion(text_data, source_id)
-    end_time = time.time()
-    ex_time = end_time-start_time
-    logging.info(f"Program took {ex_time} secs")
     return JsonResponse({
         "status" : True,
         "message" : "Vector store completed",
@@ -55,17 +56,35 @@ def upload_file(request: Request):
    
 @api_view(["POST"])
 def get_answer(request: Request):
-    start_time = time.time()
-    question: str = request.data.get('question')
-    source: str = request.data.get('source')  
-    logging.info(f"User Question : {question}")
-    gen_answer = GetAnswer()
-    answer = gen_answer.generate_answer(question, source)
-    logging.info(f"Answer :  {answer}")
-    end_time = time.time()
-    ex_time = end_time-start_time
-    logging.info(f"Program took {ex_time} secs")
-    return JsonResponse({
-        "status": True,
-        "answer" : answer
-    })
+    try:
+        logging.info("Answer API started")
+        question: str = request.data.get('question')
+        logging.info(f"Question : {question}")
+        source: str = request.data.get('source')  
+        gen_answer = GetAnswer()
+        answer = gen_answer.generate_answer(question, source)
+        logging.info(f"Answer : {answer}")
+        return JsonResponse({
+            "status": True,
+            "answer" : answer
+        })
+    except Exception as e:
+        return JsonResponse({"error" : e})    
+    
+    
+@api_view(['DELETE'])
+def delete_all_files(request):
+    """API to delete all files in the uploads directory."""
+    logging.info("Delete all files API started")
+    UPLOAD_DIR = os.path.join(settings.BASE_DIR, "uploads")
+    # Check if the directory exists
+    if not os.path.exists(UPLOAD_DIR):
+        return Response({"message": "Upload directory does not exist."}, status=400)
+    try:
+        # Delete the entire folder and recreate it
+        shutil.rmtree(UPLOAD_DIR)
+        logging.info("All files has been deleted")
+        os.makedirs(UPLOAD_DIR)
+        return JsonResponse({"message": "All files deleted successfully."}, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

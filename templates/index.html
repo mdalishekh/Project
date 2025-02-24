@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <title>Chat with your File</title>
+    <script src="{% static 'js/app.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Left side - File Display -->
+    <div class="file-section">
+        <div class="file-upload">
+            <!-- <p style="margin-left: 50px;">Select PDF, JPEG, JPG, PNG, TXT, DOCX</p> -->
+            <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.txt,.docx" hidden/>
+            <label for="file-input">Upload your File</label>
+            
+        </div>
+        <div class="file-preview" id="preview">
+            No file selected
+        </div>
+    </div>
+
+    <!-- Right side - Chat -->
+    <div class="chat-section">
+        <div class="chat-messages" id="chat-messages" style="justify-content: center;
+    align-items: center;">
+            No messages yet
+        </div>
+        <form class="chat-input" id="chat-form">
+            <input type="text" placeholder="Ask any question..." id="message-input">
+            <button type="submit" id="send-button" disabled>
+                <!-- <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke-linejoin="round" stroke-linecap="round"/>
+                </svg> -->
+                <span class="sr-only">Send</span>
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

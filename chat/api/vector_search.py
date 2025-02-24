@@ -47,7 +47,6 @@ class GetAnswer:
         print(f"Similarity search has been initiated")
         pc = Pinecone(os.getenv("PINECONE_API_KEY"))
         index = pc.Index(PINECONE_INDEX_NAME)
-        # embeddings = OpenAIEmbeddings()  
         vectorstore = PineconeVectorStore(index=index, embedding=OpenAIEmbeddings())
         # Retrieving with similarity search
         retrievers = vectorstore.as_retriever(

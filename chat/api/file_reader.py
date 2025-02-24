@@ -17,8 +17,12 @@ class FileExtractor:
                 reader = PyPDF2.PdfReader(pdf_file)
                 for page in reader.pages:
                     text += page.extract_text() + "\n"
-                if text.strip() == "" or text.strip() == None:
+                if not text.strip(): #== "" or text.strip() == None:
+                    print("IF there is no text and pdf is assusmed as scanned \n\n")
+                    print(text.strip())
+                    print("No text data in pdf")
                     return ocr_pdf(file_path)
+            print(text.strip())
             return text.strip()
         except:
             return ocr_pdf(file_path)
