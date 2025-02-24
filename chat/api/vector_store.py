@@ -26,18 +26,18 @@ class VectorStore:
             source_id (str): _description_
         """
         format_text = [Document(metadata={'source': source_id}, page_content=text)]
-        print("Spliiting text")
+        logging.info("Spliiting text")
         # Optimize chunk size for better performance
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, 
                                                        chunk_overlap=100, 
                                                        length_function=len)
         
         docs = text_splitter.split_documents(format_text)
-        print("text splitted")
-        print("vector storing")
+        logging.info("Text splitted")
+        logging.info("Vector storing")
         # pc  = Pinecone(PINECONE_API_KEY)
         vectors = PineconeVectorStore.from_documents(docs, 
                         index_name= PINECONE_INDEX_NAME, 
                         embedding= OpenAIEmbeddings())
-        print("Vector data stored")
+        logging.info("Vector data stored")
         

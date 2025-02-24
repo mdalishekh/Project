@@ -18,29 +18,26 @@ class FileExtractor:
                 for page in reader.pages:
                     text += page.extract_text() + "\n"
                 if not text.strip(): #== "" or text.strip() == None:
-                    print("IF there is no text and pdf is assusmed as scanned \n\n")
-                    print(text.strip())
-                    print("No text data in pdf")
                     return ocr_pdf(file_path)
-            print(text.strip())
+            
             return text.strip()
         except:
             return ocr_pdf(file_path)
 
     def extract_docx_text(self, file_path: str) -> str:
         """Extracts text from a DOCX file using python-docx."""
-        print("From DOCX FILE \n\n")
+        
         doc = docx.Document(file_path)
         return "".join([para.text for para in doc.paragraphs])
 
     def extract_txt_text(self, file_path: str) -> str:
         """Extracts text from a TXT file."""
-        print("From TXT FILE \n\n")
+        
         with open(file_path, "r", encoding="utf-8") as txt_file:
             return txt_file.read().strip()
         
     def extract_image_text(self, file_path: str)-> str:
-        print("From Image FILE \n\n")
+        
         return ocr_image(file_path)
             
 

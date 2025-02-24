@@ -169,3 +169,57 @@ label{
     cursor: pointer;
     transition: background-color 0.2s;
 }
+
+
+/* Spinner and Dot animations */
+
+
+.spinner {
+    display: none; 
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 10px; 
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+/* Dot loader animation */
+.dot-loader {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+}
+
+.dot-loader span {
+    width: 8px;
+    height: 8px;
+    margin: 0 3px;
+    background-color: #3498db;
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+}
+
+.dot-loader span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dot-loader span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}

@@ -2,7 +2,6 @@ import os
 import openai
 import threading
 import queue
-import logging
 from pinecone import Pinecone, ServerlessSpec
 from langchain_pinecone import PineconeVectorStore
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
@@ -44,7 +43,7 @@ class GetAnswer:
         -------
             [list] : vector data
         """
-        print(f"Similarity search has been initiated")
+        logging.info(f"Similarity search has been initiated")
         pc = Pinecone(os.getenv("PINECONE_API_KEY"))
         index = pc.Index(PINECONE_INDEX_NAME)
         vectorstore = PineconeVectorStore(index=index, embedding=OpenAIEmbeddings())
@@ -98,9 +97,9 @@ class GetAnswer:
             answer = response.get("answer", "No answer found.")
 
             # Log and return the answer
-            # print(f"Answer: {answer}")
+            # logging.info(f"Answer: {answer}")
             return answer
         except Exception as e:
             message = f"An error occurred while getting answer: {e}"
-            print(message)
+            logging.error(message)
             return message        
