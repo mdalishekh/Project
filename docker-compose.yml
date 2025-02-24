@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: django_ocr_image
+    image: django-ocr-app 
     build: .
     container_name: django_ocr_cont
     volumes:

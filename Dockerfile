@@ -4,10 +4,11 @@ FROM python:3.11
 # 2️ Set the working directory inside the container
 WORKDIR /app
 
-# 3️ Install system dependencies (Tesseract OCR)
+# 3️ Install system dependencies (Tesseract OCR & Poppler for pdf2image)
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     libtesseract-dev \
+    poppler-utils \  
     && rm -rf /var/lib/apt/lists/*
 
 # 4️ Copy and install dependencies
