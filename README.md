@@ -25,4 +25,4 @@ This project is designed to enhance document accessibility by allowing users to 
 
 #### **Project URL**
 
-🔗 **Live Demo**: [AI-Powered Document Interaction System](https://django-ocr-docker-mdalishekh.onrender.com/)
+🔗 **Live Demo**: [AI-Powered Document Interaction System](https://mdalishekh-docker-ocr-chat.onrender.com)
